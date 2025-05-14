@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roman Empire Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-size: cover;
+      font-family: 'Cinzel', serif;
+      color: #3c2f2f;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7);
+    }
+    .login-container {
+      background: rgba(255, 250, 240, 0.95);
+      padding: 2rem 3rem;
+      border: 6px solid #8b5e3c;
+      border-radius: 20px;
+      box-shadow: 0 0 25px rgba(0,0,0,0.6);
+      position: relative;
+      width: 320px;
+    }
+    .login-container::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      right: -10px;
+      bottom: -10px;
+      border: 10px solid transparent;
+      pointer-events: none;
+      z-index: -1;
+    }
+    h2 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      letter-spacing: 2px;
+    }
+    .login-container label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+    .login-container input {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.5rem;
+      border: 2px solid #8b5e3c;
+      border-radius: 5px;
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+    }
+    .login-container button {
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 1.5rem;
+      background: #8b5e3c;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: background 0.3s;
+      /* apply decorative font only to this button text */
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 1.1rem;
+    }
+    .login-container button:hover {
+      background: #6e4730;
+    }
+    .register-link {
+      display: block;
+      margin-top: 1rem;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+    .register-link a {
+      color: #8b5e3c;
+      text-decoration: none;
+      border-bottom: 1px dashed #8b5e3c;
+    }
+    .register-link a:hover {
+      color: #6e4730;
+      border-bottom-color: #6e4730;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h2>SPQR Register</h2>
+    <form id="form" method="post">
+      <label for="username">Nomen Legionis</label>
+      <input type="text" id="username" name="username" placeholder="Enter your legion name" required>
+
+      <label for="password">Clavis Secretum</label>
+      <input type="password" id="password" name="password" placeholder="Enter your secret key" required>
+
+      <button type="submit">Initium Novae Gloriae</button>
+    </form>
+    <div class="register-link">
+      <a href="/login">Login Here </a>
+    </div>
+    <div class="footer">FAC ROMAM MAGNUM ITERUM</div>
+  </div>
+  <script>
+    //check if the password and username cookies are set
+    const username = document.cookie.split('; ').find(row => row.startsWith('username='));
+    if (username) {
+      //if they are set, redirect to the dashboard
+      window.location.href = '/dashboard';
+    }
+
+    document.getElementById("form").
+            addEventListener("submit", submitter);
+
+        function submitter() {
+            event.preventDefault();
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            // Send a POST request to the server
+            fetch('/api/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password })
+            })
+            .then((response) => response.json())
+  .then((data) => {
+    console.log(data);
+    if (data["status"] === "success") {
+      // Set cookies for username and password
+      document.cookie = `username=${username}; path=/`;
+      document.cookie = `password=${password}; path=/`;
+
+      // Redirect to the dashboard
+      window.location.href = '/dashboard';
+    } else {
+      alert(data["message"]);
+    }
+  })
+        } 
+  </script>
+</body>
+</html>

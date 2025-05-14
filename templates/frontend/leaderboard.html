@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roman Empire Treasure Hunt Leaderboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-size: cover;
+      font-family: 'Cinzel', serif;
+      color: #3c2f2f;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7);
+    }
+    .leaderboard-container {
+      background: rgba(255, 250, 240, 0.95);
+      padding: 3rem;
+      border: 6px solid #8b5e3c;
+      border-radius: 20px;
+      box-shadow: 0 0 25px rgba(0,0,0,0.6);
+      position: relative;
+      max-width: 800px;
+      width: 90%;
+    }
+    .leaderboard-container::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      right: -10px;
+      bottom: -10px;
+      border: 10px solid transparent;
+      pointer-events: none;
+      z-index: -1;
+    }
+    h1 {
+      text-align: center;
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      letter-spacing: 2px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1.5rem;
+    }
+    th, td {
+      padding: 0.75rem 1rem;
+      border: 2px solid #8b5e3c;
+      text-align: center;
+    }
+    th {
+      background: rgba(139,94,60,0.2);
+      font-size: 1.2rem;
+    }
+    tbody tr:nth-child(odd) {
+      background: rgba(139,94,60,0.1);
+    }
+    /* Highlight first place */
+    .first-place {
+      background: gold;
+      color: #3c2f2f;
+      font-weight: bold;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+    .footer {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="leaderboard-container">
+    <h1>Tabula Victoriae (Leaderboard)</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Ordo (Position)</th>
+          <th>Legion Name</th>
+          <th>Gradus (Level)</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr class="first-place"><td>I</td><td>{{"Legio " + players[0]}}</td><td>{{stages[0]}}</td></tr>
+        {% for i in range(1, playerlen) %}
+        <tr>
+            <td>{{printRoman(i+1)}}</td>
+            <td>{{"Legio " + players[i]}}</td>
+            <td>{{stages[i]}}</td>
+        </tr>
+        {%endfor%}
+      </tbody>
+    </table>
+    <a href="register.html"> </a>
+    <div class="footer">FAC ROMAM MAGNUM ITERUM</div>
+  </div>
+</body>
+</html>
