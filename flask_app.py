@@ -1,5 +1,6 @@
 import flask
 import json
+import base64
 app = flask.Flask(__name__)
 
 
@@ -19,19 +20,21 @@ def roman_numerals(num):
 def getData():
     with open('data.json', 'r') as r:
         return json.loads(r.read())
-
-
 def updateData(data):
     with open('data.json', "w") as d:
         d.write(json.dumps(data))
+def getImageList():
+    with open('imglist.json', 'r') as r:
+        return json.loads(r.read())
 def getLeaderboard():
     with open('leaderboard.json', 'r') as r:
         return json.loads(r.read())
 def updateLeaderboard(stage, name):
     newboard = getLeaderboard()
     data= getData()
-    lastLevel = data[name]['count']
-    newboard[str(lastLevel)].remove(name) if lastLevel else None
+    lastLevel = data[name]['count']-1
+    if lastLevel != 0:
+        newboard[str(lastLevel)].remove(name) if lastLevel else None
     newboard[str(stage)].append(name)
 
     with open('leaderboard.json', 'w') as l:
@@ -115,10 +118,36 @@ def api_reg():
     if username in data:
         return json.dumps({"status": "error", "message": "Username already exists"})
     else:
-        data[username] = {"password": password , "count": 0}
+        data[username] = {"password": password , "count": 0, "levels":[0,0,0,0,0,0,0,0,0]}
         updateData(data)
         return json.dumps({"status": "success", "message": "User registered successfully"})
 
-
+@app.route("/api/check", methods=["POST"])
+def check():
+    data= flask.request.get_json()
+    img= data.get("image")
+    username = data.get("username")
+    password = data.get("password")
+    imglist = getImageList()
+    udata= getData()
+    for i in imglist:
+        if imglist[i] == img and udata[username]["levels"][int(i)-1] == 0:
+            #check if user is in data.json
+            if username in udata:
+                if udata[username]["password"] == password:
+                    #update count
+                    udata[username]["count"] += 1
+                    #update levels
+                    udata[username]["levels"][int(i)-1] = 1
+                    updateData(udata)
+                    #update leaderboard
+                    updateLeaderboard(udata[username]["count"], username)
+                    return json.dumps({"status": "success", "message": "Image found"})
+                else:
+                    return json.dumps({"status": "error", "message": "Invalid password"})
+            else:
+                return json.dumps({"status": "error", "message": "User not found"})
+        else:
+            return json.dumps({"status": "error", "message": "Image not found"})
 
 app.run(port=5000)

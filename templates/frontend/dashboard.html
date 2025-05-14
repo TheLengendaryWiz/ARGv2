@@ -1,18 +1,222 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roman Empire Drag & Drop</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-size: cover;
+      font-family: 'Cinzel', serif;
+      color: #3c2f2f;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      text-shadow: 1px 1px 2px rgba(255,255,255,0.7);
+    }
+    .canvas-container {
+      position: relative;
+      width: 800px;
+      height: 650px;
+      background: rgba(255,250,240,0.95);
+      border: 6px solid #8b5e3c;
+      border-radius: 20px;
+      box-shadow: 0 0 25px rgba(0,0,0,0.6);
+      overflow: hidden;
+      padding-top: 60px;
+    }
+    .canvas-container::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      right: -10px;
+      bottom: -10px;
+      border: 10px solid transparent;
+      pointer-events: none;
+      z-index: -1;
+    }
+    h1 {
+      position: absolute;
+      top: 10px;
+      width: 100%;
+      text-align: center;
+      font-size: 2rem;
+      margin: 0;
+      letter-spacing: 1px;
+    }
+    .drop-hint {
+      position: absolute;
+      top: 60%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+      font-size: 1.5rem;
+      color: rgba(60,47,47,0.6);
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .drop-hint.hidden {
+      opacity: 0;
+    }
+    .draggable {
+      position: absolute;
+      cursor: move;
+      max-width: 150px;
+      max-height: 150px;
+      user-select: none;
+      touch-action: none;
+    }
+    .instruction-bar {
+      position: absolute;
+      bottom: 10px;
+      width: 100%;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #555;
+    }
+  </style>
 </head>
 <body>
-    <script>
-            const username = document.cookie.split('; ').find(row => row.startsWith('username='));
-            const password = document.cookie.split('; ').find(row => row.startsWith('password='));
-        if (!(username&&password)) {
-      //if they are set, redirect to the dashboard
+    <div>
+  <div class="canvas-container" id="canvas">
+    <h1>Drag and Drop the images you find here</h1>
+    <div class="drop-hint" id="dropHint">Drag & Drop Images Here</div>
+    <div class="instruction-bar">
+      <div>Right-click an image to delete it.</div>
+      <div>Maximum 10 images allowed at once.</div>
+    </div>
+  </div>
+            <div class="footer">FAC ROMAM MAGNUM ITERUM</div>
+
+  </div>
+  <script>
+    const username = document.cookie.split('; ').find(row => row.startsWith('username='));
+    const password = document.cookie.split('; ').find(row => row.startsWith('password='));
+    if (!(username && password)) {
       window.location.href = '/login';
     }
-    </script>
+    const canvas = document.getElementById('canvas');
+    const hint = document.getElementById('dropHint');
+    const STORAGE_KEY = 'roman_drag_drop_state';
+
+    // Prevent default drag behaviors
+    ['dragenter','dragover','dragleave','drop','dragstart'].forEach(evt => {
+      canvas.addEventListener(evt, e => {
+        e.preventDefault();
+        if(evt==='dragover') hint.classList.add('hidden');
+      });
+    });
+
+    // Load saved state
+    window.addEventListener('load', () => {
+      const data = localStorage.getItem(STORAGE_KEY);
+      if (data) {
+        JSON.parse(data).forEach(item => {
+          createImage(item.src, item.x, item.y);
+        });
+      }
+    });
+
+    // Handle drop
+    canvas.addEventListener('drop', e => {
+      const files = e.dataTransfer.files;
+      if (files.length > 0 && canvas.querySelectorAll('.draggable').length < 10) {
+        hint.classList.add('hidden');
+        handleFiles(files, e);
+      }
+    });
+
+    function handleFiles(files, dropEvent) {
+      Array.from(files).forEach(file => {
+        if (!file.type.startsWith('image/') || canvas.querySelectorAll('.draggable').length >= 10) return;
+        const reader = new FileReader();
+        reader.onload = evt => {
+          const src = evt.target.result;
+          // Send image data to /check endpoint
+          fetch('/api/check', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image: src , username: username.split('=')[1], password: password.split('=')[1] })
+          }).catch(err => console.error('Error sending image:', err));
+
+          const { x, y } = calculatePosition(src, dropEvent);
+          createImage(src, x, y);
+          saveState();
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function calculatePosition(src, dropEvent) {
+      const img = new Image();
+      img.src = src;
+      const rect = canvas.getBoundingClientRect();
+      let x = (rect.width - img.width) / 2;
+      let y = (rect.height - img.height) / 2;
+      if (dropEvent) {
+        x = dropEvent.clientX - rect.left - img.width / 2;
+        y = dropEvent.clientY - rect.top - img.height / 2;
+      }
+      return {
+        x: Math.max(0, Math.min(x, rect.width - img.width)),
+        y: Math.max(0, Math.min(y, rect.height - img.height))
+      };
+    }
+
+    function createImage(src, x, y) {
+      const img = document.createElement('img');
+      img.src = src;
+      img.classList.add('draggable');
+      img.setAttribute('draggable', 'false');
+      img.style.left = x + 'px';
+      img.style.top = y + 'px';
+      canvas.appendChild(img);
+      makeDraggable(img);
+      img.addEventListener('contextmenu', e => {
+        e.preventDefault();
+        canvas.removeChild(img);
+        saveState();
+      });
+    }
+
+    function makeDraggable(el) {
+      let offX = 0, offY = 0;
+      el.addEventListener('pointerdown', e => {
+        el.setPointerCapture(e.pointerId);
+        offX = e.clientX - el.offsetLeft;
+        offY = e.clientY - el.offsetTop;
+      });
+      el.addEventListener('pointermove', e => {
+        if (e.pressure === 0) return;
+        const rect = canvas.getBoundingClientRect();
+        let x = e.clientX - offX;
+        let y = e.clientY - offY;
+        x = Math.max(0, Math.min(x, rect.width - el.clientWidth));
+        y = Math.max(0, Math.min(y, rect.height - el.clientHeight));
+        el.style.left = x + 'px';
+        el.style.top = y + 'px';
+        saveState();
+      });
+      el.addEventListener('pointerup', e => el.releasePointerCapture(e.pointerId));
+    }
+
+    function saveState() {
+      const items = Array.from(canvas.querySelectorAll('.draggable')).map(img => ({
+        src: img.src,
+        x: parseFloat(img.style.left),
+        y: parseFloat(img.style.top)
+      }));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    }
+  </script>
 </body>
 </html>
