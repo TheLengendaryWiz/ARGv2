@@ -1,8 +1,12 @@
 import flask
 import json
 import base64
-app = flask.Flask(__name__)
+import os
+from flask_cors import CORS
 
+app = flask.Flask(__name__)
+app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path + '/templates', 'media')
+CORS(app)
 
 def roman_numerals(num):
     #convert numbers from 1 t 9 to roman numerals
@@ -92,28 +96,6 @@ def leaderboard():
         return flask.render_template("frontend/leaderboard_copy.html")
     return flask.render_template("frontend/leaderboard.html",players=players,playerlen=len(players), stages=stages)
 
-@app.route("/parabellum")
-def parabellum():
-    #check user agent header
-    user_agent = flask.request.headers.get('User-Agent')
-    if "Antikythera" in user_agent and "JupiterOS" in user_agent:
-        return flask.render_template("frontend/parabellum.html",access=True)
-    #find Operating System
-    if "Windows" in user_agent:
-        os = "Windows"
-    elif "Linux" in user_agent and "Android" not in user_agent:
-        os = "Linux"
-    elif "Mac" in user_agent:
-        os = "Mac"
-    elif "Android" in user_agent:
-        os = "Android"
-    elif "iPhone OS" in user_agent:
-        os = "iOS"
-    else:
-        os= "Unknown"
-    
-    return flask.render_template("frontend/parabellum.html",access=False,os=os)
-
 #API CALLS
 @app.route("/api/login", methods=["POST"])
 def api_login():
@@ -136,12 +118,11 @@ def api_reg():
     data = flask.request.get_json()
     username = data.get("username")
     password = data.get("password")
-    email = data.get("email")
     data = getData()
     if username in data:
         return json.dumps({"status": "error", "message": "Username already exists"})
     else:
-        data[username] = {"password": password , "count": 0,"email":email, "levels":[0,0,0,0,0,0,0,0,0]}
+        data[username] = {"password": password , "count": 0, "levels":[0,0,0,0,0,0,0,0,0]}
         updateData(data)
         return json.dumps({"status": "success", "message": "User registered successfully"})
 
@@ -172,5 +153,39 @@ def check():
                 return json.dumps({"status": "error", "message": "User not found"})
         else:
             return json.dumps({"status": "error", "message": "Image not found"})
+
+
+@app.route('/api/verifymarketplace', methods=['POST', 'OPTIONS'])
+def verify_marketplace():
+    data = json.loads(str(flask.request.data)[2:-1])
+    print(data)
+    code = data.get('code')
+
+    if code == "glory to domus":
+        print("yay")
+        return flask.make_response("valid", 200)
+    else:
+        return flask.make_response("invalid", 200)
+
+@app.route('/locuscognitionis/gangsofrome')
+def gangs():
+    return flask.render_template('frontend/locuscognitionis.html')
+
+@app.route('/mercatus')
+def market():
+    return flask.render_template('frontend/mercatusromanus.html')
+
+@app.route('/totallylegitmarket')
+def gang():
+    return flask.render_template('frontend/domusobscura.html')
+
+@app.route('/<path:filename>')
+def media(filename):
+    print(filename)
+    return flask.send_from_directory(
+        app.config['UPLOAD_FOLDER'],
+        filename,
+        as_attachment=True
+    )
 
 app.run(port=5000)
