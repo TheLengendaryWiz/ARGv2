@@ -102,61 +102,15 @@
 </head>
 <body>
   <div class="login-container">
-    <h2>SPQR Register</h2>
-    <form id="form" method="post">
-      <label for="username">Nomen Legionis</label>
-      <input type="text" id="username" name="username" placeholder="Enter your legion name" required>
-      <label for="email" >Inscribe Email</label>
-      <input type="email" id="email" name="email" placeholder="Enter your email" required>
-      <label for="password">Clavis Secretum</label>
-      <input type="password" id="password" name="password" placeholder="Enter your secret key" required>
-
-      <button type="submit">Initium Novae Gloriae</button>
-    </form>
-    <div class="register-link">
-      <a href="/login">Login Here </a>
-    </div>
+    {% if access==True %}
+    <h2>Access Granted</h2>
+    <img src="https://i.ibb.co/PL4FnDt/image3x2.webp">
+    {% else %}
+    <h2>Access Denied</h2>
+    <div>You are on {{os}} Operating System on a normal device. Return back on the 'Antikythera' device running 'JupiterOS'</div>
+    {% endif %}
     <div class="footer">FAC ROMAM MAGNUM ITERUM</div>
   </div>
-  <script>
-    //check if the password and username cookies are set
-    const username = document.cookie.split('; ').find(row => row.startsWith('username='));
-    if (username) {
-      //if they are set, redirect to the dashboard
-      window.location.href = '/dashboard';
-    }
-
-    document.getElementById("form").
-            addEventListener("submit", submitter);
-
-        function submitter() {
-            event.preventDefault();
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
-            const email = document.getElementById("email").value;
-            // Send a POST request to the server
-            fetch('/api/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ username, password,email })
-            })
-            .then((response) => response.json())
-  .then((data) => {
-    console.log(data);
-    if (data["status"] === "success") {
-      // Set cookies for username and password
-      document.cookie = `username=${username}; path=/`;
-      document.cookie = `password=${password}; path=/`;
-
-      // Redirect to the dashboard
-      window.location.href = '/dashboard';
-    } else {
-      alert(data["message"]);
-    }
-  })
-        } 
-  </script>
+  
 </body>
 </html>

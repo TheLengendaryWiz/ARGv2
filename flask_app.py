@@ -92,6 +92,28 @@ def leaderboard():
         return flask.render_template("frontend/leaderboard_copy.html")
     return flask.render_template("frontend/leaderboard.html",players=players,playerlen=len(players), stages=stages)
 
+@app.route("/parabellum")
+def parabellum():
+    #check user agent header
+    user_agent = flask.request.headers.get('User-Agent')
+    if "Antikythera" in user_agent and "JupiterOS" in user_agent:
+        return flask.render_template("frontend/parabellum.html",access=True)
+    #find Operating System
+    if "Windows" in user_agent:
+        os = "Windows"
+    elif "Linux" in user_agent and "Android" not in user_agent:
+        os = "Linux"
+    elif "Mac" in user_agent:
+        os = "Mac"
+    elif "Android" in user_agent:
+        os = "Android"
+    elif "iPhone OS" in user_agent:
+        os = "iOS"
+    else:
+        os= "Unknown"
+    
+    return flask.render_template("frontend/parabellum.html",access=False,os=os)
+
 #API CALLS
 @app.route("/api/login", methods=["POST"])
 def api_login():
@@ -114,11 +136,12 @@ def api_reg():
     data = flask.request.get_json()
     username = data.get("username")
     password = data.get("password")
+    email = data.get("email")
     data = getData()
     if username in data:
         return json.dumps({"status": "error", "message": "Username already exists"})
     else:
-        data[username] = {"password": password , "count": 0, "levels":[0,0,0,0,0,0,0,0,0]}
+        data[username] = {"password": password , "count": 0,"email":email, "levels":[0,0,0,0,0,0,0,0,0]}
         updateData(data)
         return json.dumps({"status": "success", "message": "User registered successfully"})
 
