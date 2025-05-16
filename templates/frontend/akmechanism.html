@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="la">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Roman Empire Login</title>
+  <title>Antikythera Device Login</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&display=swap" rel="stylesheet">
   <style>
@@ -15,18 +15,19 @@
       color: #3c2f2f;
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start;
       height: 100vh;
-      text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7);
+      text-shadow: 1px 1px 2px rgba(255,255,255,0.7);
     }
     .login-container {
-      background: rgba(255, 250, 240, 0.95);
-      padding: 2rem 3rem;
+      margin-top: 120px; /* push lower */
+      background: rgba(255,250,240,0.95);
+      padding: 2.5rem 3rem;
       border: 6px solid #8b5e3c;
       border-radius: 20px;
       box-shadow: 0 0 25px rgba(0,0,0,0.6);
       position: relative;
-      width: 380px;
+      width: 340px;
     }
     .login-container::before {
       content: '';
@@ -50,7 +51,8 @@
       margin-top: 1rem;
       font-weight: bold;
     }
-    .login-container input {
+    .login-container input[type="text"],
+    .login-container input[type="password"] {
       width: 100%;
       padding: 0.5rem;
       margin-top: 0.5rem;
@@ -58,6 +60,20 @@
       border-radius: 5px;
       font-family: 'Cinzel', serif;
       font-size: 1rem;
+    }
+    .captcha {
+      display: block;
+      margin: 1rem auto;
+      width: 100%;
+      aspect-ratio: 1/1;
+      border: 2px solid #8b5e3c;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .captcha img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
     .login-container button {
       width: 100%;
@@ -69,48 +85,61 @@
       border-radius: 5px;
       cursor: pointer;
       letter-spacing: 1px;
-      transition: background 0.3s;
-      /* apply decorative font only to this button text */
-      font-family: 'Cinzel Decorative', serif;
       font-size: 1.1rem;
+      font-family: 'Cinzel Decorative', serif;
+      transition: background 0.3s;
     }
     .login-container button:hover {
       background: #6e4730;
     }
-    .register-link {
-      display: block;
+    .forgot-password {
       margin-top: 1rem;
       text-align: center;
-      font-size: 0.9rem;
     }
-    .register-link a {
+    .forgot-password a {
+      font-size: 0.85rem;
       color: #8b5e3c;
       text-decoration: none;
       border-bottom: 1px dashed #8b5e3c;
     }
-    .register-link a:hover {
+    .forgot-password a:hover {
       color: #6e4730;
       border-bottom-color: #6e4730;
     }
-    .footer {
-      text-align: center;
-      margin-top: 1rem;
-      font-size: 0.9rem;
+    .instruction {
+      font-size: 0.85rem;
       color: #555;
+      margin-top: 1rem;
+      text-align: center;
     }
   </style>
 </head>
 <body>
   <div class="login-container">
-    {% if access==True %}
-    <h2>Access Granted</h2>
-    <div><img src="https://storage.googleapis.com/billing-caa5b.appspot.com/arg/zf5so5.jpeg"></div>
-    {% else %}
-    <h2>Access Denied</h2>
-    <div>You are on {{os}} Operating System on a normal device. Return back on the 'Antikythera' device running 'JupiterOS'</div>
-    {% endif %}
-    <div class="footer">FAC ROMAM MAGNUM ITERUM</div>
+    <h2>Antikythera Login</h2>
+    <form action="/login" method="post">
+      <label for="user">Nomen Utentis</label>
+      <input type="text" id="user" name="username" placeholder="Inserte nomen utentis" required>
+      <label for="pass">Clavis Secretum</label>
+      <input type="password" id="pass" name="password" placeholder="Inserte secretum" required>
+      <div class="captcha">
+        <img src="https://storage.googleapis.com/billing-caa5b.appspot.com/arg/yrffz7.jpeg" alt="CAPTCHA image" />
+      </div>
+      <label for="captcha_input">Scruta imaginem et inserte litteras</label>
+      <input type="text" id="captcha_input" name="captcha" placeholder="Inserte captcha" required>
+      <button type="submit" onclick="asdf()">Intra Machinam</button>
+    </form>
+    <div class="forgot-password">
+      <a href="/akforgot" style="color: white;">Oblitus es clavem? Preme hic</a>
+    </div>
+    <div class="instruction">
+      Inserte litteras quas in imagine videtis ad confirmandam identitatem.
+    </div>
   </div>
-  
+  <script>
+    function asdf(){
+        alert("Tessera erronea, novam creare conare.")
+    }
+  </script>
 </body>
 </html>

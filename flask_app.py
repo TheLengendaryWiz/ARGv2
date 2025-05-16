@@ -114,6 +114,13 @@ def parabellum():
     
     return flask.render_template("frontend/parabellum.html",access=False,os=os)
 
+@app.route("/akmechanism")
+def akmechanism():
+    return open("templates/frontend/akmechanism.html").read()
+@app.route("/akforgot")
+def akforgot():
+    return open("templates/frontend/akforgot.html").read()
+
 #API CALLS
 @app.route("/api/login", methods=["POST"])
 def api_login():
