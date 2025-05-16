@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mercatus Romanus - Online Roman Marketplace</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Georgia', serif;
+      background-color: #ede6dc;
+      color: #3b2a14;
+    }
+    header {
+      background-color: #5e3c1a;
+      color: #fff;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    header img {
+      height: 60px;
+    }
+    nav {
+      display: flex;
+      gap: 15px;
+    }
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 30px;
+    }
+    .product {
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 15px;
+      text-align: center;
+    }
+    .product img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+    .product h3 {
+      margin: 10px 0 5px;
+    }
+    .product p {
+      margin: 0;
+      color: #555;
+    }
+    .price {
+      margin: 10px 0;
+      font-weight: bold;
+      color: #5e3c1a;
+    }
+    .add-to-cart {
+      padding: 8px 16px;
+      background-color: #5e3c1a;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+    .more {
+      margin-top: 30px;
+      text-align: center;
+      font-style: italic;
+      color: #7a4e1d;
+    }
+    footer {
+      background-color: #3b2a14;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="marketlogo.png" alt="Mercatus Romanus Logo">
+    </div>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">Marketplace</a>
+      <a href="#">Cart</a>
+      <a href="#">About</a>
+      <a href="#">Login</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h1>Welcome to Mercatus Romanus</h1>
+    <p>Your premier source for authentic Roman goods, delivered with the dignity of an Imperial caravan. All prices in <strong>denarii</strong>.</p>
+
+    <div class="product-grid">
+      <div class="product">
+        <img src="olive_oil.jpg" alt="Olive Oil">
+        <h3>Fine Olive Oil</h3>
+        <p>Pressed in Hispania</p>
+        <p class="price">25 denarii</p>
+        <button class="add-to-cart">Add to Cart</button>
+      </div>
+      <div class="product">
+        <img src="marble_block.jpg" alt="Marble Block">
+        <h3>Marble Block</h3>
+        <p>From Carrara</p>
+        <p class="price">120 denarii</p>
+        <button class="add-to-cart">Add to Cart</button>
+      </div>
+      <div class="product">
+        <img src="glass_vase.jpg" alt="Glass Vase">
+        <h3>Glass Vase</h3>
+        <p>Syrian craftsmanship</p>
+        <p class="price">45 denarii</p>
+        <button class="add-to-cart">Add to Cart</button>
+      </div>
+      <div class="product">
+        <img src="idol_statue.jpg" alt="Idol Statue">
+        <h3>Household Idol</h3>
+        <p>Depicts Mercury</p>
+        <p class="price">60 denarii</p>
+        <button class="add-to-cart">Add to Cart</button>
+      </div>
+      <div class="product">
+        <img src="bronze_lamp.jpg" alt="Bronze Lamp">
+        <h3>Bronze Oil Lamp</h3>
+        <p>Hand-forged in Etruria</p>
+        <p class="price">38 denarii</p>
+        <button class="add-to-cart">Add to Cart</button>
+      </div>
+      <div class="product">
+        <img src="wool_tunic.jpg" alt="Wool Tunic">
+        <h3>Wool Tunic</h3>
+        <p>Woven in Britannia</p>
+        <p class="price">32 denarii</p>
+        <button class="add-to-cart">Add to Cart</button>
+      </div>
+      <div class="product">
+        <img src="roman_coin.jpg" alt="Roman Coin">
+        <h3>Silver Denarius</h3>
+        <p>With Caesar's profile</p>
+        <p class="price">80 denarii</p>
+        <button class="add-to-cart">Add to Cart</button>
+      </div>
+    </div>
+
+    <div class="more">
+      <p><a href="/totallylegitmarket" style="color: #fff;
+      text-decoration: none;
+      font-weight: bold;">and much more......</p>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 117 Mercatus Romanus | All Rights Reserved | Terms of Use | Contact Us
+  </footer>
+</body>
+</html>
