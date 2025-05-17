@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Missing: Lucilla of Capua</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #2e1c13;
+      font-family: 'IM Fell English SC', serif;
+      color: #3b1f0e;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .scroll {
+      background: url('https://i.ibb.co/JZvPcrm/scroll.png') no-repeat center center;
+      background-size: 100% 100%;
+      width: 800px;
+      height: 1200px;
+      padding: 200px 80px 100px 80px;
+      box-sizing: border-box;
+      position: relative;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0,0,0,0.7);
+    }
+    h1 {
+      font-family: 'Cinzel', serif;
+      font-size: 2.7em;
+      color: #7b1e1e;
+      margin-bottom: 10px;
+    }
+    .illustration {
+      margin: 25px auto;
+      width: 250px;
+      height: 250px;
+      background-color: #e8d9b8;
+      border: 3px solid #5e4a36;
+      border-radius: 10px;
+      background-image: url('https://i.ibb.co/Hf0tJ7g4/lucilla.png');
+      background-size: cover;
+      background-position: center;
+    }
+    p {
+      font-size: 1.2em;
+      margin: 20px 0;
+      line-height: 1.6;
+    }
+    .reward {
+      font-style: italic;
+      font-size: 1.25em;
+      margin-top: 40px;
+      color: #5c1f1f;
+    }
+    .footer-note {
+      margin-top: 40px;
+      font-size: 1em;
+      color: #6a3c2a;
+    }
+    .report-form {
+      margin-top: 20px;
+    }
+    .report-form input[type="text"] {
+      padding: 10px;
+      font-size: 1em;
+      border-radius: 5px;
+      border: 1px solid #5c1f1f;
+      width: 60%;
+    }
+    .report-form button {
+      padding: 10px 15px;
+      font-size: 1em;
+      margin-left: 10px;
+      background-color: #5c1f1f;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .report-form button:hover {
+      background-color: #7b1e1e;
+    }
+  </style>
+</head>
+<body>
+  <div class="scroll">
+    <h1>✠ LVCILLA OF CAPVA ✠</h1>
+    <div class="illustration"></div>
+    <p><strong>Lucilla of Capua</strong>, noble daughter of the esteemed merchant <strong>Gaius Aemilius Varro</strong>, has gone missing from the streets near the <em>Grand Manor</em>.</p>
+    <p>She was last seen at dusk, wearing a stola of violet hem and bearing the signet of her house. Lucilla is graceful in stature, of gentle voice, and revered across Capua and Roma alike.</p>
+    <p>House Varro has declared her disappearance to be of grave concern and calls upon any loyal citizen to aid in her recovery.</p>
+    <p class="reward"><strong>A reward, worth more than coin, shall be granted to any who return her safely or offer true word of her fate.</strong></p>
+    <div class="footer-note">Report to the Praetor or leave discreet word beneath this.</div>
+    <form class="report-form" action="/report" method="get">
+      <input type="text" name="message" placeholder="Leave word here..." required>
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+</body>
+</html>

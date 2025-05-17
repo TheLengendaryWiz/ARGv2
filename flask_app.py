@@ -146,12 +146,11 @@ def api_reg():
     data = flask.request.get_json()
     username = data.get("username")
     password = data.get("password")
-    email = data.get("email")
     data = getData()
     if username in data:
         return json.dumps({"status": "error", "message": "Username already exists"})
     else:
-        data[username] = {"password": password , "count": 0,"email":email, "levels":[0,0,0,0,0,0,0,0,0]}
+        data[username] = {"password": password , "count": 0, "levels":[0,0,0,0,0,0,0,0,0]}
         updateData(data)
         return json.dumps({"status": "success", "message": "User registered successfully"})
 
@@ -210,11 +209,22 @@ def gang():
 
 @app.route('/<path:filename>')
 def media(filename):
-    print(filename)
     return flask.send_from_directory(
         app.config['UPLOAD_FOLDER'],
         filename,
         as_attachment=True
     )
+
+@app.route("/missing")
+def missing():
+    return flask.render_template("frontend/missing.html")
+
+@app.route('/report')
+def reported():
+    msg = flask.request.args.get("message")
+    if "foarum" in msg.lower() and "boarium" in msg.lower():
+        return flask.render_template("frontend/thankyou.html")
+    else:
+        return "<script>alert('She was not found there, you will be hanged for misinformation!')</script>"
 
 app.run(port=5000)

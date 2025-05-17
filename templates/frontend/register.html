@@ -106,8 +106,7 @@
     <form id="form" method="post">
       <label for="username">Nomen Legionis</label>
       <input type="text" id="username" name="username" placeholder="Enter your legion name" required>
-      <label for="email" >Inscribe Email</label>
-      <input type="email" id="email" name="email" placeholder="Enter your email" required>
+
       <label for="password">Clavis Secretum</label>
       <input type="password" id="password" name="password" placeholder="Enter your secret key" required>
 
@@ -133,14 +132,14 @@
             event.preventDefault();
             const username = document.getElementById("username").value;
             const password = document.getElementById("password").value;
-            const email = document.getElementById("email").value;
+
             // Send a POST request to the server
             fetch('/api/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ username, password,email })
+                body: JSON.stringify({ username, password })
             })
             .then((response) => response.json())
   .then((data) => {
