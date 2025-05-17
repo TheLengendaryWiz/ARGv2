@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Roman Mythology Password Game</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    body{margin:0;padding:0;background:#f9f4ef;font-family:'Cinzel',serif;display:flex;justify-content:center;align-items:flex-start;min-height:100vh}
+    .container{background:rgba(255,250,240,0.97);margin:2rem;padding:2rem;border:6px solid #8b5e3c;border-radius:1rem;box-shadow:0 0 20px rgba(0,0,0,0.3);width:500px}
+    h1{text-align:center}
+    #levelInfo{font-weight:bold;margin-top:1rem;text-align:center}
+    .rules{margin:1rem 0;font-size:0.9rem}
+    .rules li{margin:0.3rem 0}
+    #pwd,#submit{font-family:'Cinzel',serif}
+    #pwd{width:100%;padding:0.6rem;font-size:1rem;border:2px solid #8b5e3c;border-radius:0.5rem}
+    #submit{margin-top:1rem;padding:0.8rem;width:100%;background:#8b5e3c;color:#fff;border:none;font-size:1rem;cursor:pointer;border-radius:0.5rem}
+    #submit:hover{background:#6e4730}
+    #feedback{text-align:center;margin-top:1rem;min-height:1.2rem}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Roman Mythology Password Game</h1>
+    <div id="levelInfo"></div>
+    <ul class="rules" id="rulesList"></ul>
+    <input type="text" id="pwd" placeholder="Enter your password..." autocomplete="off" />
+    <button id="submit">Submit</button>
+    <div id="feedback"></div>
+  </div>
+  <script>
+    const JUNO_DELAY = 2000;
+    let babyTimer, spawnTimer;
+    let level = 1;
+
+    const feedback = txt => document.getElementById('feedback').textContent = txt;
+    const updateRules = txts => document.getElementById('rulesList').innerHTML = txts.map(t => `<li>${t}</li>`).join('');
+
+    // Helpers
+    function levenshtein(a,b){const m=a.length,n=b.length;const dp=Array(m+1).fill().map(()=>Array(n+1).fill(0));for(let i=0;i<=m;i++)dp[i][0]=i;for(let j=0;j<=n;j++)dp[0][j]=j;for(let i=1;i<=m;i++)for(let j=1;j<=n;j++){dp[i][j]=Math.min(dp[i-1][j]+1,dp[i][j-1]+1,dp[i-1][j-1]+(a[i-1]===b[j-1]?0:1));}return dp[m][n];}
+    function vigenere(text,key){let r='',i=0;for(let c of text.toUpperCase()){if(c>='A'&&c<='Z'){let s=key.charCodeAt(i%key.length)-65;r+=String.fromCharCode((c.charCodeAt(0)-65+s)%26+65);i++;}else r+=c;}return r;}
+
+    // Random generators
+    function genParams(){
+      window.minLen = 8 + Math.floor(Math.random()*5);
+      window.specialSets = [['!','@','#'],['$','%','^'],['&','*','?']];
+      window.chosenSpecial = specialSets[Math.floor(Math.random()*specialSets.length)];
+      window.creatures = ['PEGASUS','CHIMERA','MINOTAUR','HYDRA','CERBERUS'];
+      window.beast = creatures[Math.floor(Math.random()*creatures.length)];
+      window.fibTerms = [5,7,10][Math.floor(Math.random()*3)];
+      window.latinPhrases=['AVECAESAR','VENIVIDIVICI','CARPEDIEM'];
+      window.phrase = latinPhrases[Math.floor(Math.random()*latinPhrases.length)];
+      window.keys = ['MARSROCKS','VENUSLOVE','JUPITERROCKS'];
+      window.vigKey = keys[Math.floor(Math.random()*keys.length)];
+      window.wrongNumerals=['XIIII','IIII','VX','IC'];
+      window.wrongNum = wrongNumerals[Math.floor(Math.random()*wrongNumerals.length)];
+      window.epithets=['𒈠','𓁹','Ω'];
+      window.epithet = epithets[Math.floor(Math.random()*epithets.length)];
+      window.landmarks=['Colosseum','Pantheon','Forum Romanum'];
+      window.land = landmarks[Math.floor(Math.random()*landmarks.length)];
+      window.coords = {Colosseum:'41.89',Pantheon:'41.90','Forum Romanum':'41.89'}[land] + ',' + {Colosseum:'12.49',Pantheon:'12.48','Forum Romanum':'12.49'}[land];
+      window.roots=[['AQUA','water'],['IGNIS','fire'],['TERRA','earth']];
+      [window.root,window.modern] = roots[Math.floor(Math.random()*roots.length)];
+      window.phoneticMap={'JUPITER':['JOO-PEE-TER','JU-PI-TER','JOO-PY-TER','JYU-PI-TERR','JOO-PETER','JU-PEE-TER','JUP-EE-TER'],
+        'MARS':['MARSS','MAH-ARS','MAR-SUH','MAHR-S','MAR-S','MAR-ESS','MARZ'],
+        'VENUS':['VEE-NUS','VEH-NUS','VAY-NUSS','VEE-NUZZ','VEN-USS','VEE-NUS','VAY-NUS'],
+        'MINERVA':['MI-NUR-VUH','MY-NER-VAH','MI-NERVA','MIN-ER-VUH','MEE-NER-VA','MIN-UR-VE','MINE-RVA'],
+        'NEPTUNE':['NEP-TOON','NEHP-TYOON','NEP-TUNE','NEP-TOON','NEP-TUN','NEPT-YOON','NE-PUTUNE']};
+      window.chosenGod = Object.keys(phoneticMap)[Math.floor(Math.random()*5)];
+      window.phonetics = phoneticMap[chosenGod];
+      // 10 gods emojis
+      window.godEmoji = {'JUPITER':'⚡','JUNO':'🦚','MARS':'⚔️','VENUS':'🌹','MINERVA':'🦉','NEPTUNE':'🌊','APOLLO':'🎵','DIANA':'🏹','VULCAN':'🔨','CERES':'🌽'};
+      window.selectedGods = Object.keys(godEmoji);
+      console.log('Vigenere answer:',vigenere(phrase,vigKey));
+    }
+
+    genParams();
+
+    const levels = [
+      {name:'Length Requirement',ruleText:()=>[`Minimum length: ${minLen}`],validate:pwd=>pwd.length>=minLen},
+      {name:'Special Character',ruleText:()=>[`Include one of: ${chosenSpecial.join(', ')}`],validate:pwd=>chosenSpecial.some(c=>pwd.includes(c))},
+      {name:'Mixed Case',ruleText:()=>['Include both uppercase and lowercase letters'],validate:pwd=>/[A-Z]/.test(pwd)&&/[a-z]/.test(pwd)},
+      {name:'Phonetic God',ruleText:()=>[`Include one phonetic variant of ${chosenGod}: ${phonetics.join(', ')}`],validate:pwd=>phonetics.some(o=>pwd.toUpperCase().includes(o))},
+      {name:'Mythic Levenshtein',ruleText:()=>[`Include substring with Levenshtein distance 2–4 from ${beast}`],validate:pwd=>{for(let i=0;i<=pwd.length-beast.length;i++){let sub=pwd.substr(i,beast.length).toUpperCase();let d=levenshtein(sub,beast);if(d>=2&&d<=4)return true;}return false;}},
+      {name:'Fibonacci Seq',ruleText:()=>[`Include first ${fibTerms} Fibonacci numbers separated by commas or dashes (e.g., 1,1,2…)`],validate:pwd=>{let f=[1,1];while(f.length<fibTerms)f.push(f[f.length-1]+f[f.length-2]);return pwd.includes(f.join(','))||pwd.includes(f.join('-'));}},
+      {name:'Roman Numeral Chaos',ruleText:()=>[`Include incorrect Roman numeral: ${wrongNum}`],validate:pwd=>pwd.toUpperCase().includes(wrongNum)},
+      {name:'Ancient Epithet',ruleText:()=>[`Include ancient epithet symbol: ${epithet}`],validate:pwd=>pwd.includes(epithet)},
+      {name:'Landmark Coordinates',ruleText:()=>[`Include latitude,longitude of ${land} rounded to 2 decimals`],validate:pwd=>{let [la,lo]=coords.split(',');return pwd.includes(la)&&pwd.includes(lo);}},
+    ];
+
+    function reset(){clearTimeout(babyTimer);clearTimeout(spawnTimer);level=1;genParams();document.getElementById('pwd').value='';feedback('Reset! New parameters loaded.');setTimeout(startLevel,2000)}
+    function spawnBaby(){const d=2000+Math.random()*7000;spawnTimer=setTimeout(()=>{const inp=document.getElementById('pwd');const pos=Math.floor(Math.random()*(inp.value.length+1));inp.value=inp.value.slice(0,pos)+'👶'+inp.value.slice(pos);feedback('👶 Jupiter’s affair spawn! Remove in 3s or Juno resets you!');babyTimer=setTimeout(()=>{if(inp.value.includes('👶'))reset();},JUNO_DELAY);spawnBaby();},d)}
+    function startLevel(){clearTimeout(babyTimer);clearTimeout(spawnTimer);feedback('');document.getElementById('pwd').value=document.getElementById('pwd').value.replace(/👶/g,'');const lvl=levels[level-1];document.getElementById('levelInfo').textContent=`Level ${level}: ${lvl.name}`;updateRules(lvl.ruleText());spawnBaby();}
+    document.getElementById('submit').onclick=()=>{const pwd=document.getElementById('pwd').value;for(let i=0;i<level;i++)if(!levels[i].validate(pwd))return feedback(levels[i].ruleText());clearTimeout(babyTimer);clearTimeout(spawnTimer);feedback('✅ Passed!');if(level<levels.length){level++;setTimeout(startLevel,1000)}else window.location.href='/parabellum';};
+    startLevel();
+  </script>
+</body>
+</html>
