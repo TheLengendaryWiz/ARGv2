@@ -1,12 +1,10 @@
 import flask
 import json
-import base64
 import os
-from flask_cors import CORS
+
 
 app = flask.Flask(__name__)
 app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path + '/templates', 'media')
-CORS(app)
 
 def roman_numerals(num):
     #convert numbers from 1 t 9 to roman numerals
@@ -222,7 +220,7 @@ def missing():
 @app.route('/report')
 def reported():
     msg = flask.request.args.get("message")
-    if "foarum" in msg.lower() and "boarium" in msg.lower():
+    if "forum" in msg.lower() and "boarium" in msg.lower():
         return flask.render_template("frontend/thankyou.html")
     else:
         return "<script>alert('She was not found there, you will be hanged for misinformation!')</script>"
