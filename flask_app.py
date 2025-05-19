@@ -25,19 +25,17 @@ def getData():
 def updateData(data):
     with open('data.json', "w") as d:
         d.write(json.dumps(data))
-def getImageList():
-    with open('imglist.json', 'r') as r:
-        return json.loads(r.read())
-imglist = getImageList()
+
 def getLeaderboard():
     with open('leaderboard.json', 'r') as r:
         return json.loads(r.read())
 def updateLeaderboard(stage, name):
     newboard = getLeaderboard()
-    data= getData()
-    lastLevel = data[name]['count']-1
-    if lastLevel != 0:
-        newboard[str(lastLevel)].remove(name) if lastLevel else None
+    for i in newboard:
+        try:
+            newboard[i].remove(name)
+        except:
+            pass
     newboard[str(stage)].append(name)
 
     with open('leaderboard.json', 'w') as l:
