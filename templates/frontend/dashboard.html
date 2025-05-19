@@ -100,7 +100,7 @@
   </div>
   <script>
     //create string array called imglist
-    const imglist=[]
+    const imglist=["BiODjHd+ecW+7Z3vsPPnztmfff5z9tqd1yTRjG0kUANDucVy1SrlsuUwN8cARiqF6OdzsEIbGvSCWu2u/dFn/9gy5bJduHzNcqWSPcD8m3OBdSKb0XGAxvsPrCaJ+TFMIwGUfQZQLGK/SdVNu5y2XB6SJgnMK2klW+HQBJ6ZNl+RJudaCJbhHhCYCBqB0QHdl+BP1c89YNkIBhjMFAbbauXDnos8jrXV7HpNJF00lxz6caZRrBwF+7BlGw2AQnIajc7MBaTZNBB0qWswGCvguRl90lYXFq2MUF1yIhoynegCsAYbtEWMfBaYVOmzlUsY2/DMNfQ5+Hz4Bv+j/+2X7Ld/51/Zg4fMcrJWb3ZtivorImYjDxpxkSt67zq2LdusIP3gkgXx351y5ankCZ4sNTqmn6AqFPzh+y1UoBQ7lC+qZHMZN0g/v2HLq2t25cY1Wz93TvAnkM9CueQzDPwnJmPbevTQzp07py140Wq7A/Hod7a2NR9rN45tNOjaeNDRb+YBwIq4vTFEri4uWnVp2TWGZsAkGTs+PBL08+STT9q59Y3gyOcJ3osJhBuDSyAkjACRqdMR0hlmHJw2ZnCCgIIKLcy/M5IkiPFRxN27+0AJYG/vwPF/Zkf9kTU7xKOpHA339k6ErBFWCFkUHnHoLbSA6xksNU+3L93vQnI7QYJbcg1K6Enh9VI/5QZC6UzBvHKhw1IpZx/75HfZe973XqehpyFZ0N0iQe8IRq26aEtra1ZbXhG5YhbkfrQsaAn7/wD5i5lv/xe5vAAAAABJRU5ErkJggg=="]
     const username = document.cookie.split('; ').find(row => row.startsWith('username='));
     const password = document.cookie.split('; ').find(row => row.startsWith('password='));
     if (!(username && password)) {
@@ -145,15 +145,16 @@
           const src = evt.target.result;
           // Send image data to /check endpoint
           //loop through the imglist and check if the src is already in the list
-          for (let i = 0; i < imglist.length; i++) {
-            if (imglist[i] == src.toString().slice(10,50)) {
-              fetch('/api/check', {
+
+
+
+          fetch('/api/check', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ image: src , username: username.split('=')[1], password: password.split('=')[1] })
           }).catch(err => console.error('Error sending image:', err));
-            }
-          }
+
+
           
 
           const { x, y } = calculatePosition(src, dropEvent);

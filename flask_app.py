@@ -1,7 +1,7 @@
 import flask
 import json
 import os
-
+import imgcompar
 
 app = flask.Flask(__name__)
 app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path + '/templates', 'media')
@@ -28,6 +28,7 @@ def updateData(data):
 def getImageList():
     with open('imglist.json', 'r') as r:
         return json.loads(r.read())
+imglist = getImageList()
 def getLeaderboard():
     with open('leaderboard.json', 'r') as r:
         return json.loads(r.read())
@@ -158,17 +159,17 @@ def check():
     img= data.get("image")
     username = data.get("username")
     password = data.get("password")
-    imglist = getImageList()
     udata= getData()
-    for i in imglist:
-        if imglist[i] == img and udata[username]["levels"][int(i)-1] == 0:
+    for i in range(9):
+        chocked = imgcompar.chock(i, img)
+        if chocked[0] == 0 and chocked[1] >= 0.9 and udata[username]["levels"][i] == 0:
             #check if user is in data.json
             if username in udata:
                 if udata[username]["password"] == password:
                     #update count
                     udata[username]["count"] += 1
                     #update levels
-                    udata[username]["levels"][int(i)-1] = 1
+                    udata[username]["levels"][i] = 1
                     updateData(udata)
                     #update leaderboard
                     updateLeaderboard(udata[username]["count"], username)
@@ -177,8 +178,7 @@ def check():
                     return json.dumps({"status": "error", "message": "Invalid password"})
             else:
                 return json.dumps({"status": "error", "message": "User not found"})
-        else:
-            return json.dumps({"status": "error", "message": "Image not found"})
+    return json.dumps({"status": "wrongimg", "message": ":):):):)"})
 
 
 @app.route('/api/verifymarketplace', methods=['POST', 'OPTIONS'])
