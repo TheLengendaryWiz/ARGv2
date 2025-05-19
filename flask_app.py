@@ -119,10 +119,10 @@ def parabellum():
 
 @app.route("/akmechanism")
 def akmechanism():
-    return open("templates/frontend/akmechanism.html").read()
+    return flask.render_template('/frontend/akmechanism.html')
 @app.route("/akforgot")
 def akforgot():
-    return open("templates/frontend/akforgot.html").read()
+    return flask.render_template('/frontend/akforgot.html')
 
 #API CALLS
 @app.route("/api/login", methods=["POST"])
@@ -150,7 +150,7 @@ def api_reg():
     if username in data:
         return json.dumps({"status": "error", "message": "Username already exists"})
     else:
-        data[username] = {"password": password , "count": 0, "levels":[0,0,0,0,0,0,0,0,0]}
+        data[username] = {"password": password, "count": 0, "levels":[0,0,0,0,0,0,0,0,0]}
         updateData(data)
         return json.dumps({"status": "success", "message": "User registered successfully"})
 
