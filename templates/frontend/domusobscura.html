@@ -152,25 +152,17 @@
     </div>
 
     <div class="abductee-grid" id="marketplace">
-      <div class="abductee">
-        <h3>Lucilla of Capua</h3>
-        <p>Daughter of noble merchant Gaius Aemilius Varro</p>
-        <p class="location">Location: Stored in Forum Boarium</p>
+      <div class="abductee" id="abductee1">
+
       </div>
-      <div class="abductee">
-        <h3>Tiberius Drusus</h3>
-        <p>Former Tribune’s heir</p>
-        <p class="location">Location: Captured on the Appian Way</p>
+      <div class="abductee" id="abductee2">
+
       </div>
-      <div class="abductee">
-        <h3>Claudia Vestina</h3>
-        <p>Priestess of Vesta</p>
-        <p class="location">Location: Disappeared from Temple District</p>
+      <div class="abductee" id="abductee3">
+
       </div>
-      <div class="abductee">
-        <h3>Marcellus Rufus</h3>
-        <p>Senator's son</p>
-        <p class="location">Location: Seized outside the Curia</p>
+      <div class="abductee" id="abductee4">
+
       </div>
     </div>
   </div>
@@ -193,6 +185,9 @@
         const text = await response.text();
 
         if (text.trim() === "valid") {
+        for (var i = 1; i<=4;i++){
+    updateElementWithGET("/contents?index=" + i.toString(), "abductee" + i.toString())
+   }
           marketplace.classList.add("glitch");
           marketplace.style.display = "grid";
           setTimeout(() => {
@@ -206,6 +201,28 @@
         alert("Error verifying code. Please try again later.");
       }
     }
+
+    function updateElementWithGET(url, elementId) {
+  fetch(url)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(data => {
+      const element = document.getElementById(elementId);
+      if (element) {
+        element.innerHTML = data;
+      } else {
+        console.error(`Element with ID "${elementId}" not found.`);
+      }
+    })
+    .catch(error => {
+      console.error('Error fetching data:', error);
+    });
+}
+
   </script>
 </body>
 </html>

@@ -199,6 +199,21 @@ def gangs():
 def market():
     return flask.render_template('frontend/mercatusromanus.html')
 
+@app.route('/contents')
+def retContent():
+    content = ['''<h3>Lucilla of Capua</h3>
+        <p>Daughter of noble merchant Gaius Aemilius Varro</p>
+        <p class="location">Location: Stored in Forum Boarium</p>''', '''<h3>Tiberius Drusus</h3>
+        <p>Former Tribune’s heir</p>
+        <p class="location">Location: Captured on the Appian Way</p>''', '''<h3>Marcellus Rufus</h3>
+        <p>Senator's son</p>
+        <p class="location">Location: Seized outside the Curia</p>''','''<h3>Claudia Vestina</h3>
+        <p>Priestess of Vesta</p>
+        <p class="location">Location: Disappeared from Temple District</p>''']
+    ind = flask.request.args.get("index")
+    print(ind)
+    return content[int(ind) - 1]
+
 @app.route('/totallylegitmarket')
 def gang():
     return flask.render_template('frontend/domusobscura.html')
