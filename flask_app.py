@@ -91,6 +91,11 @@ def leaderboard():
         players = players + lb[i]
     if len(players) == 0:
         return flask.render_template("frontend/leaderboard_copy.html")
+    for k in range(len(players)):
+        if players[k][0:4]=="nigg" and players[k][-3:] == "ers":
+            players[k] = "Idiots"
+        elif players[k] == "Kundi Soothans":
+            players[k] = "Handsome Devil"
     return flask.render_template("frontend/leaderboard.html",players=players,playerlen=len(players), stages=stages)
 @app.route("/parabellum")
 def parabellum():
